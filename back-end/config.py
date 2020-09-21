@@ -6,4 +6,6 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 
 class Config(object):
-    pass
+    SQLALCHEMY_DATABASE_URI = "mysql://root:jjj123456@127.0.0.1:3306/madblog?charset=utf8"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
