@@ -26,9 +26,9 @@ def register_blueprints(app):
 
 
 def register_plugins(app):
-    cors.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    cors.init_app(app)
 
 
 from app import models
