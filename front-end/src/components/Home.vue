@@ -24,17 +24,17 @@
           {
             showAlert: true,
             alertVariant: 'danger',
-            alertMessage: 0
+            alertMessage: 'danger'
           },
           {
             showAlert: true,
             alertVariant: 'info',
-            alertMessage: 1
+            alertMessage: 'info'
           },
           {
             showAlert: true,
             alertVariant: 'dark',
-            alertMessage: 2
+            alertMessage: 'dark'
           }
         ]
       }

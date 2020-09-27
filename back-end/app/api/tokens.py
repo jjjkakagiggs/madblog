@@ -7,9 +7,8 @@ from app.api.auth import basic_auth, token_auth
 @bp.route('/tokens', methods=['POST'])
 @basic_auth.login_required
 def get_token():
-    token = g.current_user.get_token()
+    token = g.current_user.get_jwt()
     db.session.commit()
-    print('----------token-----------')
     return jsonify({'token': token})
 
 

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!--<img src="./assets/logo.png">-->
     <!-- 路由占位符 -->
     <navbar></navbar>
     <router-view></router-view>
