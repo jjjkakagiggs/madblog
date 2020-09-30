@@ -1,6 +1,6 @@
 import re
 from flask import request, jsonify, url_for, g
-from app import db
+from app.extensions import db
 from app.api import bp
 from app.api.auth import token_auth
 from app.models import User

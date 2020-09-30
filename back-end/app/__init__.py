@@ -1,13 +1,6 @@
 from flask import Flask
 from config import Config
-from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-
-cors = CORS()
-db = SQLAlchemy()
-migrate = Migrate()
+from app.extensions import db, migrate, cors
 
 
 def create_app(config_class=Config):

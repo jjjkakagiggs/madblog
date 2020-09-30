@@ -77,7 +77,7 @@
           // 表单验证没通过时，不继续往下执行，即不会通过 axios 调用后端API
           return false
         }
-        const path = '/tokens'
+        const path = '/api/tokens'
         // axios 实现Basic Auth需要在config中设置 auth 这个属性即可
         this.$axios.post(path, {}, {
           auth: {

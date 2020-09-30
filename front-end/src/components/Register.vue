@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+
 import store from '../store.js'
 
 export default {
@@ -85,7 +85,7 @@ export default {
       this.$axios.post(path, payload)
         .then((response) => {
           // handle success
-          store.setNewAction()
+          this.$toasted.success('Congratulations, you are now a registered user !', { icon: 'fingerprint' })
           this.$router.push('/login')
         })
         .catch((error) => {

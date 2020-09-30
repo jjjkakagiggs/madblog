@@ -8,7 +8,7 @@ import router from './router'
 
 // 基础配置
 axios.defaults.timeout = 5000 // 超时时间
-axios.defaults.baseURL = 'http://localhost:5000/api'
+axios.defaults.baseURL = 'http://localhost:5000'
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
