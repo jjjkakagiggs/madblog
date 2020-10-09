@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import store from '../store.js'
+  import store from '../../../store.js'
   export default {
     name: 'Profile',  //this is the name of the component
     data () {

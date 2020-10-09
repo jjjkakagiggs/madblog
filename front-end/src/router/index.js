@@ -58,6 +58,37 @@ const router = new Router({
         requiresAuth: true
       }
     },
+    {
+      path:'/user/:id',
+      // name: 'User'
+      component:User,
+      children: [
+        // Overview will be rendered inside User's <router-view>
+        // when /user/:id is matched
+        // 注意： 要有默认子路由，父路由不能指定 name
+        { path: '', component: Overview },
+        { path: 'overview', name: 'UserOverview', component: Overview },
+
+        // Followers will be rendered inside User's <router-view>
+        // when /user/:id/followers is matched
+        { path: 'followers', name: 'UserFollowers', component: Followers },
+
+        // Following will be rendered inside User's <router-view>
+        // when /user/:id/following is matched
+        { path: 'following', name: 'UserFollowing', component: Following },
+
+        // UserPostsList will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        { path: 'posts', name: 'UserPostsList', component: UserPostsList },
+
+        // UserFollowedsPostsList will be rendered inside User's <router-view>
+        // when /user/:id/followeds-posts is matched
+        { path: 'followeds-posts', name: 'UserFollowedsPostsList', component: UserFollowedsPostsList }
+      ],
+      meta: {
+        requiresAuth: true
+      }
+    },
   ]
 })
 

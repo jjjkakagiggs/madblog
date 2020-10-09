@@ -33,6 +33,14 @@ class PaginatedAPIMixin(object):
         return data
 
 
+followers = db.Table(
+    'followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
+)
+
+
 
 class User(db.Model):
     # 设置数据库表名，Post模型中的外键 user_id 会引用 users.id
@@ -52,6 +60,14 @@ class User(db.Model):
     # cascade 用于级联删除，当删除user时，该user下面的所有posts都会被级联删除
     posts = db.relationship('Post', backref='author', lazy='dynamic',
                             cascade='all, delete-orphan')
+
+    # followeds 是该用户关注了哪些用户列表
+    # followers 是该用户的粉丝列表
+    followeds = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
 
     def __repr__(self):
@@ -138,6 +154,32 @@ class User(db.Model):
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
+
+    def is_following(self, user):
+        '''判断当前用户是否已经关注了 user 这个用户对象，如果关注了，下面表达式左边是1，否则是0'''
+        return self.followeds.filter(
+            followers.c.followed_id == user.id).count() > 0
+
+    def follow(self, user):
+        '''当前用户开始关注 user 这个用户对象'''
+        if not self.is_following(user):
+            self.followeds.append(user)
+
+    def unfollow(self, user):
+        '''当前用户取消关注 user 这个用户对象'''
+        if self.is_following(user):
+            self.followeds.remove(user)
+
+    @property
+    def followed_posts(self):
+        '''获取当前用户的关注者的所有文章列表'''
+        followed = Post.query.join(
+            followers, (followers.c.followed_id == Post.author_id)).filter(
+            followers.c.follower_id == self.id)
+        # 包含当前用户自己的文章列表
+        # own = Post.query.filter_by(user_id=self.id)
+        # return followed.union(own).order_by(Post.timestamp.desc())
+        return followed.order_by(Post.timestamp.desc())
 
 
 class Post(PaginatedAPIMixin, db.Model):

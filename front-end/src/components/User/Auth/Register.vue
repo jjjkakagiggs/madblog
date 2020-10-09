@@ -29,7 +29,7 @@
 
 <script>
 
-import store from '../store.js'
+import store from '../../../store.js'
 
 export default {
     name:'Register', //this is the name of the component

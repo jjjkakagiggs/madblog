@@ -35,8 +35,8 @@
 
 <script>
   import axios from 'axios'
-  import Alert from './Alert'
-  import store from '../store.js'
+  import Alert from '../../Base/Alert'
+  import store from '../../../store.js'
   export default {
     name: 'Login',  //this is the name of the component
     components: {
