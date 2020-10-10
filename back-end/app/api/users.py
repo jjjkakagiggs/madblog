@@ -1,5 +1,5 @@
 import re
-import datetime
+from datetime import datetime
 from flask import request, jsonify, url_for, g, current_app
 from app.extensions import db
 from app.api import bp
@@ -148,8 +148,9 @@ def get_followeds(id):
         res = db.engine.execute(
             "select * from followers where follower_id={} and followed_id={}".
             format(user.id, item['id']))
-        item['timestamp'] = datetime.strptime(
-            list(res)[0][2], '%Y-%m-%d %H:%M:%S.%f')
+        # item['timestamp'] = datetime.strptime(
+        #     list(res)[0][2], '%Y-%m-%d %H:%M:%S.%f')
+        item['timestamp'] = list(res)[0][2]
     return jsonify(data)
 
 
@@ -171,8 +172,9 @@ def get_followers(id):
         res = db.engine.execute(
             "select * from followers where follower_id={} and followed_id={}".
             format(item['id'], user.id))
-        item['timestamp'] = datetime.strptime(
-            list(res)[0][2], '%Y-%m-%d %H:%M:%S.%f')
+        # item['timestamp'] = datetime.strptime(
+        #     list(res)[0][2], '%Y-%m-%d %H:%M:%S.%f')
+        item['timestamp'] = list(res)[0][2]
     return jsonify(data)
 
 

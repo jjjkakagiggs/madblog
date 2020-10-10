@@ -1,12 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// 首页
 import Home from '@/components/Home'
-import Login from '@/components/Login'
-import Register from '@/components/Register'
-import Profile from '@/components/Profile'
+// 用户认证：注册与登录
+import Register from '@/components/User/Auth/Register'
+import Login from '@/components/User/Auth/Login'
+// 用户个人主页
+import User from '@/components/User/User'
+import Overview from '@/components/User/Overview'
+import Followers from '@/components/User/Followers'
+import Following from '@/components/User/Following'
+import UserPostsList from '@/components/Post/UserPostsList'
+import UserFollowedsPostsList from '@/components/Post/UserFollowedsPostsList'
+// 用户个人设置
+import Settings from '@/components/User/Settings/Settings'
+import Profile from '@/components/User/Settings/Profile'
+import Account from '@/components/User/Settings/Account'
+import Email from '@/components/User/Settings/Email'
+import Notification from '@/components/User/Settings/Notification'
+// 博客详情页
+import PostDetail from '@/components/PostDetail'
+// 测试与后端连通性
 import Ping from '@/components/Ping'
-import EditProfile from '@/components/EditProfile'
-import Post from '@/components/Post'
 
 
 Vue.use(Router)
@@ -16,15 +31,13 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home,
-      meta: {
-        requiresAuth: true
-      }
+      component: Home
     },
     {
+      // 博客文章详情页
       path: '/post/:id',
-      name: 'Post',
-      component: Post
+      name: 'PostDetail',
+      component: PostDetail
     },
     {
       path: '/login',
@@ -38,30 +51,8 @@ const router = new Router({
     },
     {
       path: '/user/:id',
-      name: 'Profile',
-      component: Profile,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/ping',
-      name: 'Ping',
-      component: Ping
-    },
-    {
-      // 用户修改自己的个人信息
-      path: '/edit-profile',
-      name: 'EditProfile',
-      component: EditProfile,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path:'/user/:id',
-      // name: 'User'
-      component:User,
+      // name: 'User',
+      component: User,
       children: [
         // Overview will be rendered inside User's <router-view>
         // when /user/:id is matched
@@ -89,9 +80,28 @@ const router = new Router({
         requiresAuth: true
       }
     },
+    {
+      // 用户修改自己的个人信息
+      path: '/settings',
+      component: Settings,
+      children: [
+        { path: '', component: Profile },
+        { path: 'profile', name: 'SettingProfile', component: Profile },
+        { path: 'account', name: 'SettingAccount', component: Account },
+        { path: 'email', name: 'SettingEmail', component: Email },
+        { path: 'notification', name: 'SettingNotification', component: Notification }
+      ],
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/ping',
+      name: 'Ping',
+      component: Ping
+    }
   ]
 })
-
 
 router.beforeEach((to, from, next) => {
   const token = window.localStorage.getItem('madblog-token')
@@ -123,6 +133,5 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-
 
 

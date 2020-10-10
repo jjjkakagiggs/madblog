@@ -10,3 +10,8 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'edbca'
 
+    POSTS_PER_PAGE = 10
+    USERS_PER_PAGE = 10
+    COMMENTS_PER_PAGE = 10
+    MESSAGES_PER_PAGE = 10
+

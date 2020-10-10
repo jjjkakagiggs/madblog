@@ -42,7 +42,7 @@ followers = db.Table(
 
 
 
-class User(db.Model):
+class User(db.Model, PaginatedAPIMixin):
     # 设置数据库表名，Post模型中的外键 user_id 会引用 users.id
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
