@@ -15,3 +15,5 @@ class Config(object):
     COMMENTS_PER_PAGE = 10
     MESSAGES_PER_PAGE = 10
 
+
+
