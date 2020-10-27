@@ -1,23 +1,18 @@
 <template>
   <div class="container">
-    <alert
-      v-if="sharedState.is_new"
-      v-bind:variant="alertVariant"
-      v-bind:message="alertMessage">
-    </alert>
     <h1>Sign In</h1>
     <div class="row">
       <div class="col-md-4">
         <form @submit.prevent="onSubmit">
-          <div class="form-group">
+          <div class="form-group" v-bind:class="{'u-has-error-v1': loginForm.usernameError}">
             <label for="username">Username</label>
-            <input type="text" v-model="loginForm.username" class="form-control" v-bind:class="{'is-invalid': loginForm.usernameError}" id="username" placeholder="">
-            <div v-show="loginForm.usernameError" class="invalid-feedback">{{ loginForm.usernameError }}</div>
+            <input type="text" v-model="loginForm.username" class="form-control" id="username" placeholder="">
+            <small class="form-control-feedback" v-show="loginForm.usernameError">{{ loginForm.usernameError }}</small>
           </div>
-          <div class="form-group">
+          <div class="form-group" v-bind:class="{'u-has-error-v1': loginForm.passwordError}">
             <label for="password">Password</label>
-            <input type="password" v-model="loginForm.password" class="form-control" v-bind:class="{'is-invalid': loginForm.passwordError}" id="password" placeholder="">
-            <div v-show="loginForm.passwordError" class="invalid-feedback">{{ loginForm.passwordError }}</div>
+            <input type="password" v-model="loginForm.password" class="form-control" id="password" placeholder="">
+            <small class="form-control-feedback" v-show="loginForm.passwordError">{{ loginForm.passwordError }}</small>
           </div>
           <button type="submit" class="btn btn-primary">Sign In</button>
         </form>
@@ -32,25 +27,16 @@
   </div>
 </template>
 
-
 <script>
-  import axios from 'axios'
-  import Alert from '../../Base/Alert'
-  import store from '../../../store.js'
+  import store from '../../store'
   export default {
     name: 'Login',  //this is the name of the component
-    components: {
-      alert: Alert
-    },
     data () {
       return {
         sharedState: store.state,
-        alertVariant: 'info',
-        alertMessage: 'Congratulations, you are now a registered user !',
         loginForm: {
           username: '',
           password: '',
-          submitted: false,  // 是否点击了 submit 按钮
           errors: 0,  // 表单是否在前端验证通过，0 表示没有错误，验证通过
           usernameError: null,
           passwordError: null
@@ -59,8 +45,7 @@
     },
     methods: {
       onSubmit (e) {
-        this.loginForm.submitted = true  // 先更新状态
-        this.loginForm.errors = 0
+        this.loginForm.errors = 0  // 重置
         if (!this.loginForm.username) {
           this.loginForm.errors++
           this.loginForm.usernameError = 'Username required.'
@@ -87,24 +72,24 @@
         }).then((response) => {
           // handle success
           window.localStorage.setItem('madblog-token', response.data.token)
-          store.resetNotNewAction()
           store.loginAction()
+          this.$toasted.success(`Welcome ${this.sharedState.user_name}!`, { icon: 'fingerprint' })
           if (typeof this.$route.query.redirect == 'undefined') {
             this.$router.push('/')
           } else {
-            console.log(this.$route.query.redirect)
-            console.log('login success')
             this.$router.push(this.$route.query.redirect)
           }
         })
           .catch((error) => {
             // handle error
-            console.log(error)
-            if (error.response.status == 401) {
-              this.loginForm.usernameError = 'Invalid username or password.'
-              this.loginForm.passwordError = 'Invalid username or password.'
-            } else {
-              console.log(error.response)
+            // console.log('failed', error.response);
+            if (typeof error.response != 'undefined') {
+              if (error.response.status == 401) {
+                this.loginForm.usernameError = 'Invalid username or password.'
+                this.loginForm.passwordError = 'Invalid username or password.'
+              } else {
+                console.log(error.response)
+              }
             }
           })
       }

@@ -4,7 +4,7 @@ from flask import request, jsonify, url_for, g, current_app
 from app.extensions import db
 from app.api import bp
 from app.api.auth import token_auth
-from app.models import User, Post
+from app.models import User, Post, Comment
 from app.api.errors import bad_request
 
 
@@ -206,9 +206,31 @@ def get_user_posts(id):
     return jsonify(data)
 
 
+@bp.route('/users/<int:id>/recived-comments/', methods=['GET'])
+@token_auth.login_required
+def get_user_recived_comments(id):
+    '''返回该用户收到的所有评论'''
+    user = User.query.get_or_404(id)
+    if g.current_user != user:
+        return error_response(403)
+    page = request.args.get('page', 1, type=int)
+    per_page = min(
+        request.args.get(
+            'per_page', current_app.config['COMMENTS_PER_PAGE'], type=int), 100)
+    # 用户发布的所有文章ID集合
+    user_posts_ids = [post.id for post in g.current_user.posts.all()]
+    # 评论的 post_id 在 user_posts_ids 集合中，且评论的 author 不是当前用户（即文章的作者）
+    data = Comment.to_collection_dict(
+        Comment.query.filter(Comment.post_id.in_(user_posts_ids), Comment.author != g.current_user)
+        .order_by(Comment.mark_read, Comment.timestamp.desc()),
+        page, per_page, 'api.get_user_recived_comments', id=id)
+    return jsonify(data)
+
+
 
 @bp.route('/users/<int:id>', methods=['DELETE'])
 @token_auth.login_required
 def delete_user(id):
     '''删除一个用户'''
     pass
+
